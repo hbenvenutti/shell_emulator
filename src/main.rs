@@ -10,10 +10,16 @@ fn main() {
         let mut input:String = String::new();
 
         stdin().read_line(&mut input).unwrap();
-
         // reading new line leaves a trailing new line.
-        let command = input.trim();
+
+        let mut parts = input.trim().split_whitespace();
+
+        let command = parts.next().unwrap();
+        let args = parts;
+
+        
         let mut child = Command::new(command)
+          .args(args)
           .spawn()
           .unwrap();
 
