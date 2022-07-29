@@ -1,6 +1,6 @@
 use std::io::{stdin, stdout, Write};
 
-use std::process::Command;
+use std::process::{Child, Command, Stdio};
 
 use std::env;
 use std::path::Path;
@@ -43,10 +43,17 @@ fn main() {
       command => {
         let mut child = Command::new(command)
           .args(args)
-          .spawn()
-          .unwrap();
+          .spawn();
+          // .unwrap();
 
-        child.wait().ok(); // Não deixa dois comandos executarem ao mesmo tempo.
+        match child {
+          
+          Ok(mut child) => { child.await() },
+          // igual ao código original, mas dá erro.
+
+          Err(e) => eprintln!("{}", e),
+        }
+        // child.wait().ok(); // Não deixa dois comandos executarem ao mesmo tempo.
       }
     }
   }
