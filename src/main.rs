@@ -23,7 +23,7 @@ fn main() {
   
       // -- Argumentos ---------------------------------------------------------------------------- //
       // Divide o input em comando e argumentos
-      let mut parts = input.trim().split_whitespace();
+      let mut parts = command.trim().split_whitespace();
   
       let command = parts.next().unwrap();
       let args = parts;
@@ -39,6 +39,8 @@ fn main() {
           if let Err(e) = env::set_current_dir(&root){
             eprintln!("{}", e);
           }
+
+          previous_command = None;
         },
         
         // -- Fechar o terminal ------------------------------------------------------------------- //
@@ -53,16 +55,16 @@ fn main() {
             );
   
           let stdout = if commands.peek().is_some() {
-            Stdio::piped();
+              Stdio::piped()
           } else {
-              Stdio::inherit();
+              Stdio::inherit() // por algum motivo ";" faz o código não rodar...
           };
   
           let output = Command::new(command)
-          .args(args)
-          .stdin(stdin)
-          .stdout(stdout)
-          .spawn();
+            .args(args)
+            .stdin(stdin)
+            .stdout(stdout)
+            .spawn();
   
           match output {
             Ok(output) => {previous_command = Some(output);},
